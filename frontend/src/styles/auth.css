@@ -1,0 +1,6 @@
+/* Auth page styles. Keep sign-in and registration presentation here. */
+.auth-shell { min-height: 100vh; }
+.auth-card { width: min(100%, 430px); }
+.auth-card form { display: grid; }
+.auth-card .error { margin: 4px 0 12px; }
+

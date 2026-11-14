@@ -1,0 +1,3 @@
+export default function DashboardLayout({ children, user, page, onNavigate, onLogout }) {
+  return <main className="dashboard"><header><button className="wordmark" onClick={() => onNavigate("overview")}><span className="logo small">◈</span> watchtower</button><nav aria-label="Primary navigation"><button className={page === "overview" ? "active" : ""} onClick={() => onNavigate("overview")}>Overview</button><button className={page === "health" ? "active" : ""} onClick={() => onNavigate("health")}>Service health</button></nav><div className="account">{user?.username}<button onClick={onLogout}>Sign out</button></div></header>{children}<footer>WATCHTOWER <span>API v1 · built for calm operations</span></footer></main>;
+}

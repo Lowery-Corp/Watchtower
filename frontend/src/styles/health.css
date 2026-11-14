@@ -1,0 +1,4 @@
+/* Service health page styles. */
+.dashboard .banner { transition: border-color .2s, background .2s; }
+.dashboard .cards { contain: layout; }
+.dashboard .card code { overflow-wrap: anywhere; }

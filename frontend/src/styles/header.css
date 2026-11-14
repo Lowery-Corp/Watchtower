@@ -1,0 +1,5 @@
+/* Shared header page/chrome styles. */
+.dashboard header { position: sticky; top: 0; z-index: 10; background: #0f1824ee; backdrop-filter: blur(14px); }
+.wordmark { border: 0; padding: 0; color: inherit; background: transparent; cursor: pointer; }
+.dashboard nav button { cursor: pointer; }
+

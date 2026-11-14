@@ -1,0 +1,5 @@
+/* Overview page styles. Dashboard-only layout belongs here. */
+.dashboard { min-height: 100vh; }
+.dashboard .content { min-height: calc(100vh - 150px); }
+.overview-details { margin-top: 48px; }
+

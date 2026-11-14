@@ -1,0 +1,6 @@
+import { healthProbes } from "../services/health";
+import HealthCard from "../components/health/HealthCard";
+export default function HealthPage({ statuses, checked, loading, refresh }) {
+  const healthy = healthProbes.every(([key]) => statuses[key]?.ok);
+  return <div className="content"><div className="heading"><div><p className="eyebrow">SERVICE HEALTH</p><h1>Everything in view.</h1><p className="muted">Live probes from the Watchtower API.</p></div><button className="refresh" onClick={refresh} disabled={loading}>↻ {loading ? "Checking…" : "Refresh now"}</button></div><section className={`banner ${healthy ? "good" : checked ? "bad" : "pending"}`}><strong>{healthy ? "All systems operational" : checked ? "Some systems need attention" : "Checking your systems"}</strong><span>{checked ? `Last checked ${checked.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} · automatic checks every 10 minutes` : "Contacting the API…"}</span></section><div className="section-title"><h2>Service health</h2><span>{Object.keys(statuses).length}/{healthProbes.length} checked</span></div><section className="cards">{healthProbes.map(([key, label, path]) => <HealthCard key={key} label={label} path={path} state={statuses[key]} />)}</section></div>;
+}

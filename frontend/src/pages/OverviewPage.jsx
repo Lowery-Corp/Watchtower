@@ -1,0 +1,3 @@
+export default function OverviewPage({ user, onNavigate }) {
+  return <div className="content"><div className="heading"><div><p className="eyebrow">SYSTEM OVERVIEW</p><h1>Good to see you, <em>{user?.username?.split("@")[0]}</em>.</h1><p className="muted">Your essential services, at a glance.</p></div><button className="refresh" onClick={() => onNavigate("health")}>View service health →</button></div><section className="details overview-details"><article><h3>Session secured</h3><p>Signed in as <strong>{user?.username}</strong> using a cookie-based session.</p></article><article><h3>Automatic monitoring</h3><p>Health probes refresh every 10 minutes while this tab is open.</p></article></section></div>;
+}
