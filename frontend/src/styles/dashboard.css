@@ -28,13 +28,17 @@
 .pivot-name { display: flex; align-items: center; min-width: 0; }
 .pivot-name.level-1 { padding-left: 24px; }
 .pivot-name.level-2 { padding-left: 52px; }
-.pivot-name > div { min-width: 0; }
+.pivot-name-copy { min-width: 0; flex: 1; }
 .pivot-name a { display: block; overflow: hidden; color: #dce9fb; font-size: 14px; font-weight: 750; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }
 .pivot-name a:hover { color: #80b1fa; text-decoration: underline; text-underline-offset: 3px; }
 .pivot-name span:not(.pivot-leaf) { display: block; margin-top: 3px; overflow: hidden; color: #71849e; font-size: 12px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
 .pivot-toggle { flex: 0 0 28px; width: 28px; height: 28px; margin-right: 8px; border: 1px solid #31435c; border-radius: 6px; color: #afc3de; background: #172438; font-size: 17px; line-height: 1; }
 .pivot-toggle:hover { border-color: #50719d; color: #fff; }
 .pivot-leaf { flex: 0 0 36px; }
+.pivot-monitor-refresh { margin-left: 10px; padding: 6px 8px; border: 1px solid #3a4d67; border-radius: 6px; opacity: 0; color: #b9cbe1; background: #19283b; font-size: 12px; font-weight: 700; pointer-events: none; transform: translateX(4px); transition: opacity .15s, transform .15s; white-space: nowrap; }
+.pivot-monitor-row:hover .pivot-monitor-refresh, .pivot-monitor-row:focus-within .pivot-monitor-refresh { opacity: 1; pointer-events: auto; transform: translateX(0); }
+.pivot-monitor-refresh:hover { border-color: #5a7da9; color: #fff; }
+.pivot-monitor-refresh:disabled { opacity: .65; cursor: wait; }
 .pivot-uptime { display: grid; grid-template-columns: minmax(60px, 1fr) 62px; align-items: center; gap: 10px; }
 .pivot-uptime strong { color: #c9d7e9; font-size: 12px; text-align: right; }
 .pivot-uptime-track { height: 7px; overflow: hidden; border-radius: 99px; background: #263448; }
@@ -44,6 +48,5 @@
 .pivot-uptime-track .bad { background: #ec6e78; }
 .pivot-uptime-track .unknown { background: #53647a; }
 .pivot-number { color: #9daec2; font: 13px monospace; text-align: right !important; }
-.pivot-warning { padding: 12px 14px; border: 1px solid #76532d; border-radius: 8px; color: #e7c391; background: #382b1d; font-size: 14px; }
 @media (max-width: 700px) { .uptime-overview { margin-top: 34px; }.uptime-overview-heading { align-items: stretch; flex-direction: column; }.uptime-totals { grid-template-columns: 1fr 1fr; }.uptime-totals div:nth-child(2) { border-right: 0; }.uptime-totals div:nth-child(-n+2) { border-bottom: 1px solid #29394d; } }
 

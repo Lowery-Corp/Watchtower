@@ -140,7 +140,7 @@ The current API-backed UI maps to these capabilities:
 
 Monitor list/detail responses may also include `status` and `status_history`. History entries contain a status value and Unix timestamp and are rendered as expandable table subrows rather than separate routes.
 
-The authenticated overview also loads the complete project/environment/monitor hierarchy and renders an uptime pivot. Monitor history is aggregated upward for environment- and project-level status, recorded uptime, and sample totals.
+The authenticated overview loads the complete project/environment/monitor hierarchy from `GET /api/v1/projects` and renders an uptime pivot without additional collection requests. Monitor history is aggregated upward for environment- and project-level status, recorded uptime, and sample totals. A monitor-row refresh may call that monitor's individual GET endpoint and recompute its parent totals.
 
 Health probes can be refreshed manually and are automatically refreshed every 10 minutes while the dashboard tab remains open.
 

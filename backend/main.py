@@ -1,21 +1,25 @@
-from contextlib import asynccontextmanager
-
-from contextlib import suppress
 import asyncio
+from contextlib import asynccontextmanager, suppress
+from typing import AsyncIterator
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from core.config import settings
-from middleware.request_id import RequestIDMiddleware
-from httpxC.http_client import http_client
-from cache.redis import redis_manager
 from api.v1.api import api_router
+from cache.redis import redis_manager
+from core.config import settings
+from httpxC.http_client import http_client
+from middleware.request_id import RequestIDMiddleware
 from tasks.tasks import site_check
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await redis_manager.connect()
+    await redis_manager.flushdb()
+
+    redis = redis_manager.get_client()
+    app.state.redis = redis
 
     site_check_task = asyncio.create_task(
         site_check(),
@@ -39,7 +43,9 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+
 app.add_middleware(RequestIDMiddleware)
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -60,5 +66,6 @@ app.add_middleware(
         "Origin",
     ],
 )
+
 
 app.include_router(api_router, prefix="/api/v1")

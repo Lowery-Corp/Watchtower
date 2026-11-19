@@ -11,22 +11,22 @@ data: dict[UUID, Any] = {
                 "environments": {
                     UUID("e4f83f05-14d4-48a8-81a9-dff1196c24c8"): {
                         "id": UUID("e4f83f05-14d4-48a8-81a9-dff1196c24c8"),
-                        "name": "environment_name",
+                        "name": "Productions",
                         "description": "environment_description",
                         "monitors": {
                             UUID("2948bd56-5d47-4c3a-8b8b-436199ade864"): {
                                 "id": UUID("2948bd56-5d47-4c3a-8b8b-436199ade864"),
-                                "name": "updated_name",
+                                "name": "John's Portfolio",
                                 "description": "updated_description",
-                                "tag": "dummy_tag",
-                                "url": "https://www.google.com"
+                                "tag": "portfolio",
+                                "url": "https://portfolio.johnmgrubbs.io"
                             },
                             UUID("93e5c293-9748-455e-9911-d1f72ccde2a3"): {
                                 "id": UUID("93e5c293-9748-455e-9911-d1f72ccde2a3"),
-                                "name": "monitor_name",
+                                "name": "Scrappy RAG",
                                 "description": "monitor_description",
-                                "tag": "dummy_tag",
-                                "url": "https://www.google.com"
+                                "tag": "scrappy",
+                                "url": "https://scrappy.johnmgrubbs.io"
                             },
                             UUID("a2a26000-f299-4f75-bb30-fd9dbe5a5c4c"): {
                                 "id": UUID("a2a26000-f299-4f75-bb30-fd9dbe5a5c4c"),

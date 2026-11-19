@@ -1,8 +1,8 @@
 import { listProjects } from "./projects";
-import { listEnvironments } from "./environments";
-import { listMonitors } from "./monitors";
+import { normalizeEnvironments } from "./environments";
+import { normalizeMonitors } from "./monitors";
 
-function summarize(monitors) {
+export function summarizeMonitors(monitors) {
   const samples = monitors.flatMap((monitor) => monitor.monitor_status_history || []);
   const knownStatuses = monitors.map((monitor) => monitor.monitor_status).filter((status) => status !== null);
   return {
@@ -17,40 +17,28 @@ function summarize(monitors) {
   };
 }
 
-export async function getUptimePivot() {
-  const projects = await listProjects();
-  let partialFailures = 0;
-
-  const projectRows = await Promise.all(projects.map(async (project) => {
-    let environments = [];
-    try {
-      environments = await listEnvironments(project.project_id);
-    } catch {
-      partialFailures += 1;
-    }
-
-    const environmentRows = await Promise.all(environments.map(async (environment) => {
-      let monitors = [];
-      try {
-        monitors = await listMonitors(project.project_id, environment.environment_id);
-      } catch {
-        partialFailures += 1;
-      }
-      return { ...environment, monitors, summary: summarize(monitors) };
-    }));
+export function buildUptimePivot(projects) {
+  const projectRows = projects.map((project) => {
+    const environmentRows = normalizeEnvironments(project.environments || {}).map((environment) => {
+      const monitors = normalizeMonitors(environment.monitors || {});
+      return { ...environment, monitors, summary: summarizeMonitors(monitors) };
+    });
 
     const monitors = environmentRows.flatMap((environment) => environment.monitors);
-    return { ...project, environments: environmentRows, summary: summarize(monitors) };
-  }));
+    return { ...project, environments: environmentRows, summary: summarizeMonitors(monitors) };
+  });
 
   const allMonitors = projectRows.flatMap((project) => project.environments.flatMap((environment) => environment.monitors));
   return {
     projects: projectRows,
     summary: {
-      ...summarize(allMonitors),
+      ...summarizeMonitors(allMonitors),
       projectCount: projectRows.length,
       environmentCount: projectRows.reduce((total, project) => total + project.environments.length, 0),
     },
-    partialFailures,
   };
+}
+
+export async function getUptimePivot() {
+  return buildUptimePivot(await listProjects());
 }

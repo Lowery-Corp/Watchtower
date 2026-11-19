@@ -11,10 +11,10 @@ function UptimeValue({ uptime }) {
   return <div className="pivot-uptime"><div className="pivot-uptime-track" aria-hidden="true"><span className={tone} style={{ width: `${width}%` }} /></div><strong>{formatUptime(uptime)}</strong></div>;
 }
 
-function PivotName({ level, href, name, detail, expanded, onToggle, hasChildren }) {
+function PivotName({ level, href, name, detail, expanded, onToggle, hasChildren, action }) {
   return <div className={`pivot-name level-${level}`}>
     {hasChildren ? <button className="pivot-toggle" type="button" onClick={onToggle} aria-expanded={expanded} aria-label={`${expanded ? "Collapse" : "Expand"} ${name}`}>{expanded ? "−" : "+"}</button> : <span className="pivot-leaf" aria-hidden="true" />}
-    <div><a href={href}>{name}</a><span>{detail}</span></div>
+    <div className="pivot-name-copy"><a href={href}>{name}</a><span>{detail}</span></div>{action}
   </div>;
 }
 
@@ -22,7 +22,7 @@ function SummaryCells({ summary }) {
   return <><td><MonitorStatusBadge status={summary.status} /></td><td><UptimeValue uptime={summary.uptime} /></td><td className="pivot-number">{summary.sampleCount.toLocaleString()}</td></>;
 }
 
-export default function UptimePivot({ projects }) {
+export default function UptimePivot({ projects, onRefreshMonitor, refreshingMonitors }) {
   const [collapsed, setCollapsed] = useState(new Set());
   const toggle = (key) => setCollapsed((current) => {
     const next = new Set(current);
@@ -47,7 +47,9 @@ export default function UptimePivot({ projects }) {
               const monitorHref = `${environmentHref}/monitors/${encodeURIComponent(monitor.monitor_id)}`;
               const history = monitor.monitor_status_history || [];
               const uptime = history.length ? history.filter((sample) => sample.status).length / history.length * 100 : null;
-              return <tr className="pivot-monitor-row" key={`monitor:${monitor.monitor_id}`}><th scope="row"><PivotName level={2} href={monitorHref} name={monitor.monitor_name} detail={monitor.monitor_url} hasChildren={false} /></th><SummaryCells summary={{ status: monitor.monitor_status, uptime, sampleCount: history.length }} /></tr>;
+              const refreshing = refreshingMonitors.has(monitor.monitor_id);
+              const refreshAction = <button className="pivot-monitor-refresh" type="button" disabled={refreshing} onClick={() => onRefreshMonitor(project.project_id, environment.environment_id, monitor.monitor_id)} aria-label={`Refresh ${monitor.monitor_name}`}>↻ {refreshing ? "Refreshing…" : "Refresh"}</button>;
+              return <tr className="pivot-monitor-row" key={`monitor:${monitor.monitor_id}`}><th scope="row"><PivotName level={2} href={monitorHref} name={monitor.monitor_name} detail={monitor.monitor_url} hasChildren={false} action={refreshAction} /></th><SummaryCells summary={{ status: monitor.monitor_status, uptime, sampleCount: history.length }} /></tr>;
             })}
           </Fragment>;
         })}
