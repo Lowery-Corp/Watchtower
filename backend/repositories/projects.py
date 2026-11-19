@@ -1,37 +1,23 @@
 from typing import Any
-from uuid import UUID, uuid4
+from uuid import UUID
 
+from repositories.helpers import gen_id
+from db.database import database
 from schemas.user import AuthorizedUser
 from schemas.projects import CreateProjectRequest, UpdateProjectRequest
 
-projects_cache: dict[UUID, Any] = {}
 
-# ==================================helpers==================================
-async def gen_project_id(current_user: AuthorizedUser) -> UUID:
-
-    new_project_id: UUID = uuid4()
-    try:
-        project_id_in_cache: bool = True if projects_cache[current_user.id]["projects"][new_project_id] else False
-    except KeyError:
-        project_id_in_cache: bool = False
-
-    if project_id_in_cache:
-        new_project_id = await gen_project_id(current_user)
-
-    return new_project_id
-
-# ==================================main==================================
 async def get_projects(
     current_user: AuthorizedUser,
     project_id: UUID|None = None,
 ) -> dict[str, Any]:
 
     if project_id:
-        user_projects: dict[str, Any] = projects_cache.get(current_user.id, {"projects": {}})
+        user_projects: dict[str, Any] = database.get(current_user.id, {"projects": {}})
         project: dict[str, Any] = user_projects["projects"].get(project_id, {})
         return project
     elif not project_id:
-        user_projects: dict[str, Any] = projects_cache.get(current_user.id, {"projects": {}})
+        user_projects: dict[str, Any] = database.get(current_user.id, {"projects": {}})
         return user_projects
 
 
@@ -41,16 +27,16 @@ async def create_project(
 ) -> dict[str, str | Any]:
     new_project: dict[str, Any] = {
         "project": {
-            "id": await gen_project_id(current_user),
+            "id": await gen_id(current_user, "project", database),
             "name": new_project_body.project_name,
             "description": new_project_body.project_description or "No description provided",
         },
     }
 
-    if current_user.id not in projects_cache:
-        projects_cache[current_user.id] = {"projects": {}}
+    if current_user.id not in database:
+        database[current_user.id] = {"projects": {}}
 
-    projects_cache[current_user.id]["projects"][new_project["project"]["id"]] = new_project["project"]
+    database[current_user.id]["projects"][new_project["project"]["id"]] = new_project["project"]
     return await get_projects(current_user, new_project["project"]["id"])
 
 
@@ -72,7 +58,7 @@ async def update_project(
         },
     }
 
-    projects_cache[current_user.id]["projects"][project_id] = updated_project["project"]
+    database[current_user.id]["projects"][project_id] = updated_project["project"]
     return updated_project
 
 
@@ -85,5 +71,5 @@ async def delete_project(
     if not current_project:
         return {"error": "Project not found"}
 
-    del projects_cache[current_user.id]["projects"][project_id]
+    del database[current_user.id]["projects"][project_id]
     return {"ok": True }

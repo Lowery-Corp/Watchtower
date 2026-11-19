@@ -123,6 +123,11 @@ The current API-backed UI maps to these capabilities:
 | API health card | `GET /api/v1/health` |
 | Readiness card | `GET /api/v1/health/ready` |
 | Liveness card | `GET /api/v1/health/live` |
+| List projects | `GET /api/v1/projects` |
+| Create a project | `POST /api/v1/projects` |
+| Read a project | `GET /api/v1/projects/{project_id}` |
+| Update a project | `PUT /api/v1/projects/{project_id}` |
+| Delete a project | `DELETE /api/v1/projects/{project_id}` |
 
 Health probes can be refreshed manually and are automatically refreshed every 10 minutes while the dashboard tab remains open.
 

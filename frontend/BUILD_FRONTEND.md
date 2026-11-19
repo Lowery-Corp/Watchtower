@@ -67,6 +67,7 @@ The current frontend can use these API areas when they are available in the docs
 
 - Authentication: registration, login, current-user/session lookup, and logout.
 - Health monitoring: general health, readiness, and liveness probes.
+- Projects: authenticated list, detail, create, update, and delete operations.
 
 Do not assume that an endpoint exists solely because a UI concept would be useful. Confirm it in the API documentation first.
 

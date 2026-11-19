@@ -3,3 +3,9 @@
 .wordmark { border: 0; padding: 0; color: inherit; background: transparent; cursor: pointer; }
 .dashboard nav button { cursor: pointer; }
 
+@media (max-width: 620px) {
+  .dashboard header { height: auto; min-height: 72px; flex-wrap: wrap; padding-block: 12px; }
+  .dashboard nav { order: 3; width: 100%; margin: 10px 0 0; border-top: 1px solid #223044; padding-top: 8px; }
+  .dashboard nav button { flex: 1; }
+}
+

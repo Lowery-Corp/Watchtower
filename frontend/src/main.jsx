@@ -6,6 +6,7 @@ import "./styles/auth.css";
 import "./styles/dashboard.css";
 import "./styles/header.css";
 import "./styles/health.css";
+import "./styles/projects.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

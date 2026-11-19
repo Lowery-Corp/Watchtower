@@ -6,6 +6,10 @@
 
 ## Implemented
 
+- Projects workspace with responsive list, loading/empty/error states, create/edit forms, deletion confirmation, and refresh controls.
+- Project CRUD integration using `GET/POST /api/v1/projects` and `GET/PUT/DELETE /api/v1/projects/{project_id}` with cookie credentials.
+- Defensive project response normalization for the API's open-object list and detail response schemas.
+- Fixed project collection parsing for the backend's actual `{ projects: { "<uuid>": { id, name, description } } }` response and added handling for 200-level `{ error }` mutation responses.
 - Cleaned `src/App.jsx` so it only handles session restoration, page selection, navigation, and layout composition; feature UI and API calls remain in their designated modules.
 - Reorganized the frontend according to `APP_STRUCTURE_BLUEPRINT.md`: pages, layouts, reusable components, API services, health polling hooks, and styles now live in their designated `src/` folders.
 - Split page/chrome styling into `src/styles/auth.css`, `src/styles/dashboard.css`, `src/styles/health.css`, and `src/styles/header.css`, imported from `src/main.jsx`.
@@ -29,3 +33,4 @@
 - Authentication request bodies use `{ username, password }`.
 - The API sets/reads the authenticated session through cookies.
 - Health endpoints return JSON objects; the UI renders the optional `message` field and safely handles other response shapes.
+- Project responses may wrap records under `projects`, `items`, `results`, or `data`; the frontend also accepts direct arrays, keyed objects, and individual project objects.
