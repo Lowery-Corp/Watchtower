@@ -39,6 +39,6 @@ export function buildUptimePivot(projects) {
   };
 }
 
-export async function getUptimePivot() {
-  return buildUptimePivot(await listProjects());
+export async function getUptimePivot(options) {
+  return buildUptimePivot(await listProjects(options));
 }

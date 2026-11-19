@@ -44,8 +44,9 @@ export function normalizeProjects(payload) {
   return normalizeProjectMap(payload);
 }
 
-export async function listProjects() {
-  return normalizeProjects(await api(endpoint));
+export async function listProjects({ cache } = {}) {
+  const query = typeof cache === "boolean" ? `?cache=${cache}` : "";
+  return normalizeProjects(await api(`${endpoint}${query}`));
 }
 
 export async function getProject(projectId) {

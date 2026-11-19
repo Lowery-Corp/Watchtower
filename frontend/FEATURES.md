@@ -18,6 +18,7 @@
 - Monitor CRUD integration using `GET/POST /api/v1/projects/{project_id}/environments/{environment_id}/monitors` and `GET/PUT/DELETE /api/v1/projects/{project_id}/environments/{environment_id}/monitors/{monitor_id}`.
 - Expandable monitor table subrows showing current state, recorded uptime percentage, sample count, and the newest 25 embedded `status_history` checks; monitor data refreshes silently every 15 seconds.
 - Overview uptime pivot sourced entirely from the nested `GET /api/v1/projects` response, with collapsible project, environment, and monitor rows; current health, history-based uptime bars, and sample counts roll up across the hierarchy and refresh every 15 seconds. Hovering or focusing a monitor row reveals a refresh action that reloads that monitor from its detail endpoint.
+- Manual uptime-pivot refresh bypasses the projects cache with `GET /api/v1/projects?cache=false`; initial and automatic loads retain the endpoint's default cache behavior.
 - Updated project and environment create/edit payloads to the current API fields: `name` and `description`.
 - Cleaned `src/App.jsx` so it only handles session restoration, page selection, navigation, and layout composition; feature UI and API calls remain in their designated modules.
 - Reorganized the frontend according to `APP_STRUCTURE_BLUEPRINT.md`: pages, layouts, reusable components, API services, health polling hooks, and styles now live in their designated `src/` folders.

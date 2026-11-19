@@ -13,11 +13,11 @@ export function useUptimePivot() {
   const [refreshingMonitors, setRefreshingMonitors] = useState(new Set());
   const [error, setError] = useState("");
 
-  const load = useCallback(async (showLoading = true) => {
+  const load = useCallback(async ({ showLoading = true, cache } = {}) => {
     if (showLoading) setLoading(true);
     setError("");
     try {
-      setPivot(await getUptimePivot());
+      setPivot(await getUptimePivot({ cache }));
     } catch (err) {
       setError(err.message || "The uptime overview could not be loaded.");
     } finally {
@@ -27,7 +27,7 @@ export function useUptimePivot() {
 
   useEffect(() => {
     load();
-    const timer = setInterval(() => load(false), 15000);
+    const timer = setInterval(() => load({ showLoading: false }), 15000);
     return () => clearInterval(timer);
   }, [load]);
 
@@ -55,5 +55,5 @@ export function useUptimePivot() {
     }
   };
 
-  return { ...pivot, loading, error, refreshingMonitors, refresh: () => load(true), refreshMonitor };
+  return { ...pivot, loading, error, refreshingMonitors, refresh: () => load({ cache: false }), refreshMonitor };
 }

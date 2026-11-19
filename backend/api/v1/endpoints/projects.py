@@ -56,7 +56,7 @@ async def fetch_projects(
 
     encoded_projects = jsonable_encoder(user_projects)
 
-    await redis.set(cache_key, json.dumps(encoded_projects), ex=360)
+    await redis.set(cache_key, json.dumps(encoded_projects), ex=10)
 
     return user_projects
 

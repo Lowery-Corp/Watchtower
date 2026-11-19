@@ -142,6 +142,8 @@ Monitor list/detail responses may also include `status` and `status_history`. Hi
 
 The authenticated overview loads the complete project/environment/monitor hierarchy from `GET /api/v1/projects` and renders an uptime pivot without additional collection requests. Monitor history is aggregated upward for environment- and project-level status, recorded uptime, and sample totals. A monitor-row refresh may call that monitor's individual GET endpoint and recompute its parent totals.
 
+The uptime pivot's manual refresh requests `GET /api/v1/projects?cache=false` to bypass cached hierarchy data. Initial loading and timed background refreshes omit the option and use the backend's default cache behavior.
+
 Health probes can be refreshed manually and are automatically refreshed every 10 minutes while the dashboard tab remains open.
 
 ### Frontend URL Pattern

@@ -41,8 +41,8 @@ async def fetch_environments_by_project(
     project_id: UUID,
     environment_id: UUID,
     monitor_id: UUID | None = None,
-    current_user: AuthorizedUser = Depends(get_current_user),
     cache: bool = True,
+    current_user: AuthorizedUser = Depends(get_current_user),
 ) -> dict[Any, Any]:
     redis: Redis = request.app.state.redis
 

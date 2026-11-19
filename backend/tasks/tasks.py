@@ -38,4 +38,4 @@ async def site_check() -> None:
                                 monitor_id,
                                 status,
                             )
-            await sleep(1)
+            await sleep(60)
