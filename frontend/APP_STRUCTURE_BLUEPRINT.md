@@ -132,6 +132,11 @@ The current API-backed UI maps to these capabilities:
 | Create a project environment | `POST /api/v1/projects/{project_id}/environments` |
 | Read a project environment | `GET /api/v1/projects/{project_id}/environments/{environment_id}` |
 | Update a project environment | `PUT /api/v1/projects/{project_id}/environments/{environment_id}` |
+| List environment monitors | `GET /api/v1/projects/{project_id}/environments/{environment_id}/monitors` |
+| Create an environment monitor | `POST /api/v1/projects/{project_id}/environments/{environment_id}/monitors` |
+| Read an environment monitor | `GET /api/v1/projects/{project_id}/environments/{environment_id}/monitors/{monitor_id}` |
+| Update an environment monitor | `PUT /api/v1/projects/{project_id}/environments/{environment_id}/monitors/{monitor_id}` |
+| Delete an environment monitor | `DELETE /api/v1/projects/{project_id}/environments/{environment_id}/monitors/{monitor_id}` |
 
 Health probes can be refreshed manually and are automatically refreshed every 10 minutes while the dashboard tab remains open.
 
@@ -145,6 +150,7 @@ The frontend uses browser History API routes and renders resource IDs in nested 
 | `/projects` | Project table. |
 | `/projects/{project_id}` | Environment table for one project. |
 | `/projects/{project_id}/environments/{environment_id}` | Environment detail table. |
+| `/projects/{project_id}/environments/{environment_id}/monitors/{monitor_id}` | Monitor detail table. |
 | `/health` | Service health screen. |
 
 Navigation must respond to browser back/forward events. Resource links should retain real `href` values so URLs can be copied or opened directly.

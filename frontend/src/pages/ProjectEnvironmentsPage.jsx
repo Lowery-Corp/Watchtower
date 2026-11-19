@@ -1,10 +1,10 @@
 import { useState } from "react";
 import EnvironmentsTable from "../components/environments/EnvironmentsTable";
-import EnvironmentDetails from "../components/environments/EnvironmentDetails";
 import EnvironmentForm from "../components/environments/EnvironmentForm";
+import EnvironmentMonitorsPage from "./EnvironmentMonitorsPage";
 import { useEnvironments } from "../hooks/useEnvironments";
 
-export default function ProjectEnvironmentsPage({ project, environmentId, onBack, onOpenEnvironment, onEnvironmentBack, onProjectChanged }) {
+export default function ProjectEnvironmentsPage({ project, environmentId, monitorId, onBack, onOpenEnvironment, onEnvironmentBack, onOpenMonitor, onMonitorBack, onProjectChanged }) {
   const { environments, loading, saving, error, refresh, create, update } = useEnvironments(project.project_id);
   const [editing, setEditing] = useState(undefined);
 
@@ -20,7 +20,7 @@ export default function ProjectEnvironmentsPage({ project, environmentId, onBack
     const environment = environments.find((item) => item.environment_id === environmentId);
     if (loading && !environment) return <div className="content"><section className="projects-loading" aria-live="polite">Loading environment…</section></div>;
     if (!environment) return <div className="content resource-not-found"><button className="back-button" onClick={onEnvironmentBack}>Back to environments</button><p className="eyebrow">ENVIRONMENT NOT FOUND</p><h1>This environment isn’t available.</h1><p className="muted">The resource may have been removed or the URL may be incorrect.</p></div>;
-    return <div className="content environments-page"><button className="back-button" onClick={onEnvironmentBack}>Back to environments</button><EnvironmentDetails environment={environment} onEdit={setEditing} />{editing !== undefined && <EnvironmentForm environment={editing} saving={saving} error={error} onCancel={() => setEditing(undefined)} onSubmit={submit} />}</div>;
+    return <div className="content environments-page"><EnvironmentMonitorsPage project={project} environment={environment} monitorId={monitorId} onBack={onEnvironmentBack} onOpenMonitor={(monitor) => onOpenMonitor(environment, monitor)} onMonitorBack={() => onMonitorBack(environment)} onEditEnvironment={setEditing} onEnvironmentChanged={refresh} />{editing !== undefined && <EnvironmentForm environment={editing} saving={saving} error={error} onCancel={() => setEditing(undefined)} onSubmit={submit} />}</div>;
   }
 
   return <div className="content environments-page">

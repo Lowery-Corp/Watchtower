@@ -17,17 +17,23 @@ data: dict[UUID, Any] = {
                             UUID("2948bd56-5d47-4c3a-8b8b-436199ade864"): {
                                 "id": UUID("2948bd56-5d47-4c3a-8b8b-436199ade864"),
                                 "name": "updated_name",
-                                "description": "updated_description"
+                                "description": "updated_description",
+                                "tag": "dummy_tag",
+                                "url": "http://dummy.url"
                             },
                             UUID("93e5c293-9748-455e-9911-d1f72ccde2a3"): {
                                 "id": UUID("93e5c293-9748-455e-9911-d1f72ccde2a3"),
                                 "name": "monitor_name",
-                                "description": "monitor_description"
+                                "description": "monitor_description",
+                                "tag": "dummy_tag",
+                                "url": "http://dummy.url"
                             },
                             UUID("a2a26000-f299-4f75-bb30-fd9dbe5a5c4c"): {
                                 "id": UUID("a2a26000-f299-4f75-bb30-fd9dbe5a5c4c"),
                                 "name": "monitor_name",
-                                "description": "monitor_description"
+                                "description": "monitor_description",
+                                "tag": "dummy_tag",
+                                "url": "http://dummy.url"
                             }
                         }
                     },

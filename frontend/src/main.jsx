@@ -9,6 +9,7 @@ import "./styles/health.css";
 import "./styles/projects.css";
 import "./styles/environments.css";
 import "./styles/tables.css";
+import "./styles/monitors.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

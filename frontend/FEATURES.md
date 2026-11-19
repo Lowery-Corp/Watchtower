@@ -14,6 +14,9 @@
 - Fixed project collection parsing for the backend's actual `{ projects: { "<uuid>": { id, name, description } } }` response and added handling for 200-level `{ error }` mutation responses.
 - Project environment workspace opened from each project, with responsive list, loading/empty/error states, create and edit forms, and project-level environment counts.
 - Environment integration using `GET/POST /api/v1/projects/{project_id}/environments` and `GET/PUT /api/v1/projects/{project_id}/environments/{environment_id}` with UUID-keyed response normalization. Environment deletion is intentionally omitted because the API does not expose it.
+- Environment monitor workspace with monitor counts, responsive tables, nested detail URLs, endpoint links, create/edit forms, deletion confirmation, and loading/empty/error states.
+- Monitor CRUD integration using `GET/POST /api/v1/projects/{project_id}/environments/{environment_id}/monitors` and `GET/PUT/DELETE /api/v1/projects/{project_id}/environments/{environment_id}/monitors/{monitor_id}`.
+- Updated project and environment create/edit payloads to the current API fields: `name` and `description`.
 - Cleaned `src/App.jsx` so it only handles session restoration, page selection, navigation, and layout composition; feature UI and API calls remain in their designated modules.
 - Reorganized the frontend according to `APP_STRUCTURE_BLUEPRINT.md`: pages, layouts, reusable components, API services, health polling hooks, and styles now live in their designated `src/` folders.
 - Split page/chrome styling into `src/styles/auth.css`, `src/styles/dashboard.css`, `src/styles/health.css`, and `src/styles/header.css`, imported from `src/main.jsx`.

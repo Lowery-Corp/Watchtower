@@ -12,8 +12,8 @@ export default function EnvironmentForm({ environment, saving, error, onCancel, 
   const submit = (event) => {
     event.preventDefault();
     onSubmit({
-      environment_name: values.environment_name.trim(),
-      environment_description: values.environment_description.trim() || null,
+      name: values.environment_name.trim(),
+      description: values.environment_description.trim() || null,
     });
   };
 

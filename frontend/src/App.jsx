@@ -14,6 +14,7 @@ function parseRoute(pathname) {
       page: "projects",
       projectId: segments[1] || null,
       environmentId: segments[2] === "environments" ? segments[3] || null : null,
+      monitorId: segments[4] === "monitors" ? segments[5] || null : null,
     };
   }
   if (segments[0] === "health") return { page: "health", projectId: null, environmentId: null };
@@ -60,7 +61,7 @@ export default function App() {
   if (!user) return <AuthPage onLogin={setUser} />;
   return (
     <DashboardLayout user={user} page={route.page} onNavigate={navigate} onLogout={signOut}>
-      {route.page === "projects" && <ProjectsPage projectId={route.projectId} environmentId={route.environmentId} onNavigate={navigate} />}
+      {route.page === "projects" && <ProjectsPage projectId={route.projectId} environmentId={route.environmentId} monitorId={route.monitorId} onNavigate={navigate} />}
       {route.page === "health" && <HealthPage {...health} />}
       {route.page === "overview" && <OverviewPage user={user} onNavigate={navigate} />}
     </DashboardLayout>

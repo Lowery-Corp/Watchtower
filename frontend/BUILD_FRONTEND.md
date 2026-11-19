@@ -69,6 +69,7 @@ The current frontend can use these API areas when they are available in the docs
 - Health monitoring: general health, readiness, and liveness probes.
 - Projects: authenticated list, detail, create, update, and delete operations.
 - Project environments: authenticated list, detail, create, and update operations nested under a project.
+- Environment monitors: authenticated list, detail, create, update, and delete operations nested under a project environment.
 
 Do not assume that an endpoint exists solely because a UI concept would be useful. Confirm it in the API documentation first.
 
