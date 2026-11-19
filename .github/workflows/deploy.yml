@@ -1,0 +1,266 @@
+name: Build and Deploy Watchtower
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: watchtower-production
+  cancel-in-progress: true
+
+env:
+  BACKEND_IMAGE_NAME: watchtower-backend
+  FRONTEND_IMAGE_NAME: watchtower-frontend
+
+jobs:
+  build-images:
+    name: Build container images
+    runs-on: ubuntu-latest
+    environment: build and deploy
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=gha,scope=watchtower-backend
+          cache-to: type=gha,mode=max,scope=watchtower-backend
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=gha,scope=watchtower-frontend
+          cache-to: type=gha,mode=max,scope=watchtower-frontend
+
+  deploy:
+    name: Deploy production stack
+    needs: build-images
+    runs-on: ubuntu-latest
+    environment: build and deploy
+
+    steps:
+      - name: Checkout deployment files
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Create production Compose file
+        run: |
+          cat > docker-compose.deploy.yml <<'COMPOSE'
+          name: watchtower
+
+          services:
+            frontend:
+              image: "${WATCHTOWER_FRONTEND_IMAGE:?WATCHTOWER_FRONTEND_IMAGE is required}"
+              env_file:
+                - ./frontend/.env
+              ports:
+                - "${FRONTEND_PORT:-5173}:5173"
+              depends_on:
+                backend:
+                  condition: service_healthy
+              restart: unless-stopped
+
+            backend:
+              image: "${WATCHTOWER_BACKEND_IMAGE:?WATCHTOWER_BACKEND_IMAGE is required}"
+              env_file:
+                - ./backend/.env
+              ports:
+                - "${BACKEND_PORT:-8000}:8000"
+              depends_on:
+                postgres:
+                  condition: service_healthy
+                db-cache:
+                  condition: service_healthy
+              healthcheck:
+                test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health', timeout=3)"]
+                interval: 10s
+                timeout: 5s
+                retries: 6
+                start_period: 10s
+              restart: unless-stopped
+
+            postgres:
+              image: pgvector/pgvector:pg17
+              env_file:
+                - ./.env
+              ports:
+                - "${POSTGRES_PORT:-5432}:5432"
+              volumes:
+                - watchtower_postgres_data:/var/lib/postgresql/data
+                - ./postgres/init:/docker-entrypoint-initdb.d:ro
+              healthcheck:
+                test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+                interval: 10s
+                timeout: 5s
+                retries: 6
+              restart: unless-stopped
+
+            db-cache:
+              image: redis:7-alpine
+              command: ["redis-server", "--save", "", "--appendonly", "no"]
+              ports:
+                - "${REDIS_PORT:-6379}:6379"
+              healthcheck:
+                test: ["CMD", "redis-cli", "ping"]
+                interval: 10s
+                timeout: 5s
+                retries: 6
+              restart: unless-stopped
+
+          volumes:
+            watchtower_postgres_data:
+              name: watchtower_postgres_data
+          COMPOSE
+
+      - name: Connect GitHub Actions to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+          ping: ${{ secrets.SERVER_HOST }}
+
+      - name: Verify Tailscale SSH reachability
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        run: |
+          set -euo pipefail
+          : "${SERVER_HOST:?SERVER_HOST secret is required}"
+          tailscale status
+          tailscale ping "$SERVER_HOST"
+          timeout 10 bash -c "</dev/tcp/${SERVER_HOST}/22"
+
+      - name: Prepare deployment directory
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          SERVER_APP_DIR: ${{ secrets.SERVER_APP_DIR }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          protocol: tcp4
+          timeout: 1m
+          envs: SERVER_APP_DIR
+          script: |
+            set -eu
+            : "${SERVER_APP_DIR:?SERVER_APP_DIR secret is required}"
+            mkdir -p \
+              "$SERVER_APP_DIR/backend" \
+              "$SERVER_APP_DIR/frontend" \
+              "$SERVER_APP_DIR/postgres/init"
+
+      - name: Copy Compose deployment files
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          source: "docker-compose.deploy.yml,postgres/init/01-create-app-user.sh"
+          target: ${{ secrets.SERVER_APP_DIR }}
+          overwrite: true
+
+      - name: Deploy Compose stack over Tailscale
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          SERVER_APP_DIR: ${{ secrets.SERVER_APP_DIR }}
+          IMAGE_TAG: ${{ github.sha }}
+          BACKEND_IMAGE_NAME: ${{ env.BACKEND_IMAGE_NAME }}
+          FRONTEND_IMAGE_NAME: ${{ env.FRONTEND_IMAGE_NAME }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          protocol: tcp4
+          timeout: 2m
+          command_timeout: 10m
+          envs: DOCKERHUB_USERNAME,DOCKERHUB_TOKEN,SERVER_APP_DIR,IMAGE_TAG,BACKEND_IMAGE_NAME,FRONTEND_IMAGE_NAME
+          script: |
+            set -eu
+            : "${SERVER_APP_DIR:?SERVER_APP_DIR secret is required}"
+            : "${DOCKERHUB_USERNAME:?DOCKERHUB_USERNAME secret is required}"
+            : "${DOCKERHUB_TOKEN:?DOCKERHUB_TOKEN secret is required}"
+            : "${IMAGE_TAG:?GitHub commit tag is required}"
+            cd "$SERVER_APP_DIR"
+
+            for required_file in \
+              .env \
+              backend/.env \
+              frontend/.env \
+              docker-compose.deploy.yml \
+              postgres/init/01-create-app-user.sh; do
+              if [ ! -f "$required_file" ]; then
+                echo "Missing required deployment file: $SERVER_APP_DIR/$required_file" >&2
+                exit 1
+              fi
+            done
+
+            printf '%s' "$DOCKERHUB_TOKEN" | docker login \
+              --username "$DOCKERHUB_USERNAME" \
+              --password-stdin
+
+            WATCHTOWER_BACKEND_IMAGE="${DOCKERHUB_USERNAME}/${BACKEND_IMAGE_NAME}:${IMAGE_TAG}"
+            WATCHTOWER_FRONTEND_IMAGE="${DOCKERHUB_USERNAME}/${FRONTEND_IMAGE_NAME}:${IMAGE_TAG}"
+            export WATCHTOWER_BACKEND_IMAGE WATCHTOWER_FRONTEND_IMAGE
+            COMPOSE_FILE=docker-compose.deploy.yml
+            export COMPOSE_FILE
+
+            echo "Validating Watchtower Compose configuration"
+            docker compose config --quiet
+            echo "Pulling Watchtower images"
+            docker compose pull
+            echo "Starting database and cache"
+            docker compose up -d postgres db-cache
+            echo "Running database migrations"
+            docker compose run --rm backend alembic upgrade head
+            echo "Starting Watchtower"
+            docker compose up -d --no-build --remove-orphans
+
+            for attempt in $(seq 1 30); do
+              if docker compose exec -T backend python -c \
+                "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health', timeout=3)"; then
+                break
+              fi
+              if [ "$attempt" -eq 30 ]; then
+                echo "Backend health check did not pass after 60 seconds" >&2
+                docker compose logs --tail=100 backend
+                exit 1
+              fi
+              sleep 2
+            done
+
+            docker compose ps
