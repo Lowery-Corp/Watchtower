@@ -7,6 +7,8 @@ import "./styles/dashboard.css";
 import "./styles/header.css";
 import "./styles/health.css";
 import "./styles/projects.css";
+import "./styles/environments.css";
+import "./styles/tables.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

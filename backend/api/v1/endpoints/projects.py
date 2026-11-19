@@ -14,14 +14,14 @@ from repositories.projects import (
 )
 
 
-router = APIRouter(tags=["projects"])
+router = APIRouter()
 
 @router.get("", summary="Get all projects for the current user")
 @router.get("/{project_id}", summary="Get a specific project for the current user")
 async def fetch_projects(
     project_id: UUID | None = None,
     current_user: AuthorizedUser = Depends(get_current_user),
-) -> dict[str, Any]:
+) -> dict[Any, Any]:
 
     user_projects: dict[str, Any] = await get_projects(current_user, project_id)
 
@@ -33,14 +33,6 @@ async def new_project(
     new_project_body: CreateProjectRequest,
     current_user: AuthorizedUser = Depends(get_current_user),
 ) -> dict[str, str | Any]:
-
-    new_project: dict[str, Any] = {
-        "user_id": current_user.id,
-        "project": {
-            "name": new_project_body.project_name,
-            "description": new_project_body.project_description or "No description provided",
-        },
-    }
 
     new_project = await create_project(
         new_project_body,

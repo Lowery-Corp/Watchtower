@@ -6,10 +6,14 @@
 
 ## Implemented
 
+- Replaced project and environment card grids with responsive data tables containing resource names, descriptions, counts/status, full IDs, and row actions.
+- Replaced hash navigation with History API routes: `/`, `/projects`, `/projects/{project_id}`, `/projects/{project_id}/environments/{environment_id}`, and `/health`; direct links and browser back/forward preserve resource context.
 - Projects workspace with responsive list, loading/empty/error states, create/edit forms, deletion confirmation, and refresh controls.
 - Project CRUD integration using `GET/POST /api/v1/projects` and `GET/PUT/DELETE /api/v1/projects/{project_id}` with cookie credentials.
 - Defensive project response normalization for the API's open-object list and detail response schemas.
 - Fixed project collection parsing for the backend's actual `{ projects: { "<uuid>": { id, name, description } } }` response and added handling for 200-level `{ error }` mutation responses.
+- Project environment workspace opened from each project, with responsive list, loading/empty/error states, create and edit forms, and project-level environment counts.
+- Environment integration using `GET/POST /api/v1/projects/{project_id}/environments` and `GET/PUT /api/v1/projects/{project_id}/environments/{environment_id}` with UUID-keyed response normalization. Environment deletion is intentionally omitted because the API does not expose it.
 - Cleaned `src/App.jsx` so it only handles session restoration, page selection, navigation, and layout composition; feature UI and API calls remain in their designated modules.
 - Reorganized the frontend according to `APP_STRUCTURE_BLUEPRINT.md`: pages, layouts, reusable components, API services, health polling hooks, and styles now live in their designated `src/` folders.
 - Split page/chrome styling into `src/styles/auth.css`, `src/styles/dashboard.css`, `src/styles/health.css`, and `src/styles/header.css`, imported from `src/main.jsx`.

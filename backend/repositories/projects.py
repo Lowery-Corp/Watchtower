@@ -28,8 +28,8 @@ async def create_project(
 ) -> dict[str, str | Any]:
     new_project: dict[str, Any] = {
         "id": gen_id(),
-        "name": new_project_body.project_name,
-        "description": new_project_body.project_description or "No description provided",
+        "name": new_project_body.name,
+        "description": new_project_body.description or "No description provided",
     }
 
     if current_user.id not in database:
@@ -49,8 +49,8 @@ async def update_project(
     if not current_project:
         return {"error": "Project not found"}
 
-    current_project["name"] = updated_project_body.project_name or current_project.get("name", "No name provided")
-    current_project["description"] = updated_project_body.project_description or current_project.get("description", "No description provided")
+    current_project["name"] = updated_project_body.name or current_project.get("name", "No name provided")
+    current_project["description"] = updated_project_body.description or current_project.get("description", "No description provided")
 
     database[current_user.id][project_id] = current_project
     return current_project

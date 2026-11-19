@@ -13,7 +13,7 @@ from repositories.environments import (
     # delete_environment,
 )
 
-router = APIRouter(tags=["project environments"])
+router = APIRouter()
 
 @router.get("/{project_id}/environments", summary="Get a specific environments for a specific project for the current user")
 @router.get("/{project_id}/environments/{environment_id}", summary="Get a specific environment for a specific project for the current user")

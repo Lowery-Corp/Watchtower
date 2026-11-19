@@ -128,8 +128,26 @@ The current API-backed UI maps to these capabilities:
 | Read a project | `GET /api/v1/projects/{project_id}` |
 | Update a project | `PUT /api/v1/projects/{project_id}` |
 | Delete a project | `DELETE /api/v1/projects/{project_id}` |
+| List project environments | `GET /api/v1/projects/{project_id}/environments` |
+| Create a project environment | `POST /api/v1/projects/{project_id}/environments` |
+| Read a project environment | `GET /api/v1/projects/{project_id}/environments/{environment_id}` |
+| Update a project environment | `PUT /api/v1/projects/{project_id}/environments/{environment_id}` |
 
 Health probes can be refreshed manually and are automatically refreshed every 10 minutes while the dashboard tab remains open.
+
+### Frontend URL Pattern
+
+The frontend uses browser History API routes and renders resource IDs in nested URLs:
+
+| URL | Screen |
+| --- | --- |
+| `/` | Authenticated overview. |
+| `/projects` | Project table. |
+| `/projects/{project_id}` | Environment table for one project. |
+| `/projects/{project_id}/environments/{environment_id}` | Environment detail table. |
+| `/health` | Service health screen. |
+
+Navigation must respond to browser back/forward events. Resource links should retain real `href` values so URLs can be copied or opened directly.
 
 ## Backend: `backend/`
 

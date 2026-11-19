@@ -1,11 +1,12 @@
 /* Shared header page/chrome styles. */
 .dashboard header { position: sticky; top: 0; z-index: 10; background: #0f1824ee; backdrop-filter: blur(14px); }
 .wordmark { border: 0; padding: 0; color: inherit; background: transparent; cursor: pointer; }
-.dashboard nav button { cursor: pointer; }
+.dashboard nav a { border: 0; border-radius: 7px; padding: 8px 11px; color: #7f8fa5; background: transparent; font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; }
+.dashboard nav a:hover, .dashboard nav a.active { color: #e8f0fc; background: #1c2b40; }
 
 @media (max-width: 620px) {
   .dashboard header { height: auto; min-height: 72px; flex-wrap: wrap; padding-block: 12px; }
   .dashboard nav { order: 3; width: 100%; margin: 10px 0 0; border-top: 1px solid #223044; padding-top: 8px; }
-  .dashboard nav button { flex: 1; }
+  .dashboard nav a { flex: 1; text-align: center; }
 }
 

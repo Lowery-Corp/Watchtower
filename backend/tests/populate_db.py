@@ -12,7 +12,24 @@ data: dict[UUID, Any] = {
                     UUID("e4f83f05-14d4-48a8-81a9-dff1196c24c8"): {
                         "id": UUID("e4f83f05-14d4-48a8-81a9-dff1196c24c8"),
                         "name": "environment_name",
-                        "description": "environment_description"
+                        "description": "environment_description",
+                        "monitors": {
+                            UUID("2948bd56-5d47-4c3a-8b8b-436199ade864"): {
+                                "id": UUID("2948bd56-5d47-4c3a-8b8b-436199ade864"),
+                                "name": "updated_name",
+                                "description": "updated_description"
+                            },
+                            UUID("93e5c293-9748-455e-9911-d1f72ccde2a3"): {
+                                "id": UUID("93e5c293-9748-455e-9911-d1f72ccde2a3"),
+                                "name": "monitor_name",
+                                "description": "monitor_description"
+                            },
+                            UUID("a2a26000-f299-4f75-bb30-fd9dbe5a5c4c"): {
+                                "id": UUID("a2a26000-f299-4f75-bb30-fd9dbe5a5c4c"),
+                                "name": "monitor_name",
+                                "description": "monitor_description"
+                            }
+                        }
                     },
                     UUID("bb64e669-26c4-4167-9794-0433c976c998"): {
                         "id": UUID("bb64e669-26c4-4167-9794-0433c976c998"),
