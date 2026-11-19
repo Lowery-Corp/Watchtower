@@ -244,7 +244,10 @@ jobs:
             echo "Pulling Watchtower images"
             docker compose pull
             echo "Starting database and cache"
-            docker compose up -d postgres db-cache
+            docker compose up -d --wait --wait-timeout 60 postgres db-cache
+            echo "Synchronizing the application database role"
+            docker compose exec -T postgres \
+              /docker-entrypoint-initdb.d/01-create-app-user.sh
             echo "Running database migrations"
             docker compose run --rm backend alembic upgrade head
             echo "Starting Watchtower"
