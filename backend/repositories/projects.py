@@ -7,6 +7,7 @@ from schemas.user import AuthorizedUser
 from schemas.projects import CreateProjectRequest, UpdateProjectRequest
 
 
+
 async def get_projects(
     current_user: AuthorizedUser,
     project_id: UUID|None = None,
@@ -26,18 +27,16 @@ async def create_project(
     current_user: AuthorizedUser,
 ) -> dict[str, str | Any]:
     new_project: dict[str, Any] = {
-        "project": {
-            "id": await gen_id(current_user, "project", database),
-            "name": new_project_body.project_name,
-            "description": new_project_body.project_description or "No description provided",
-        },
+        "id": gen_id(),
+        "name": new_project_body.project_name,
+        "description": new_project_body.project_description or "No description provided",
     }
 
     if current_user.id not in database:
         database[current_user.id] = {"projects": {}}
 
-    database[current_user.id]["projects"][new_project["project"]["id"]] = new_project["project"]
-    return await get_projects(current_user, new_project["project"]["id"])
+    database[current_user.id]["projects"][new_project["id"]] = new_project
+    return await get_projects(current_user, new_project["id"])
 
 
 async def update_project(
@@ -50,16 +49,11 @@ async def update_project(
     if not current_project:
         return {"error": "Project not found"}
 
-    updated_project: dict[str, Any] = {
-        "project": {
-            "id": current_project.get("id"),
-            "name": updated_project_body.project_name or current_project.get("name", "No name provided"),
-            "description": updated_project_body.project_description or current_project.get("description", "No description provided"),
-        },
-    }
+    current_project["name"] = updated_project_body.project_name or current_project.get("name", "No name provided")
+    current_project["description"] = updated_project_body.project_description or current_project.get("description", "No description provided")
 
-    database[current_user.id]["projects"][project_id] = updated_project["project"]
-    return updated_project
+    database[current_user.id][project_id] = current_project
+    return current_project
 
 
 async def delete_project(

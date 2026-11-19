@@ -8,8 +8,8 @@ from schemas.environments import CreateEnvironmentRequest, UpdateEnvironmentRequ
 
 from repositories.environments import (
     get_environments_by_project,
-    # create_environment,
-    # update_environment,
+    create_environment,
+    update_environment,
     # delete_environment,
 )
 
@@ -21,14 +21,15 @@ async def fetch_environments_by_project(
     project_id: UUID,
     environment_id: UUID | None = None,
     current_user: AuthorizedUser = Depends(get_current_user),
-) -> dict[str, Any]:
+) -> dict[Any, Any]:
 
     user_environments: dict[str, Any] = await get_environments_by_project(current_user, project_id, environment_id)
 
     return user_environments
 
+
 @router.post("/{project_id}/environments", summary="Create a new environment for a specific project for the current user")
-async def create_environment(
+async def new_environment(
     project_id: UUID,
     new_environment_body: CreateEnvironmentRequest,
     current_user: AuthorizedUser = Depends(get_current_user),
@@ -36,3 +37,14 @@ async def create_environment(
     new_environment: dict[str, Any] = await create_environment(new_environment_body, project_id, current_user)
 
     return new_environment
+
+@router.put("/{project_id}/environments/{environment_id}", summary="Update an existing environment for a specific project for the current user")
+async def edit_environment(
+    project_id: UUID,
+    environment_id: UUID,
+    updated_environment_body: UpdateEnvironmentRequest,
+    current_user: AuthorizedUser = Depends(get_current_user),
+) -> dict[str, Any]:
+    updated_environment: dict[str, Any] = await update_environment(updated_environment_body, project_id, environment_id, current_user)
+
+    return updated_environment
