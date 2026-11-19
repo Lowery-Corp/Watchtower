@@ -19,21 +19,21 @@ data: dict[UUID, Any] = {
                                 "name": "updated_name",
                                 "description": "updated_description",
                                 "tag": "dummy_tag",
-                                "url": "http://dummy.url"
+                                "url": "https://www.google.com"
                             },
                             UUID("93e5c293-9748-455e-9911-d1f72ccde2a3"): {
                                 "id": UUID("93e5c293-9748-455e-9911-d1f72ccde2a3"),
                                 "name": "monitor_name",
                                 "description": "monitor_description",
                                 "tag": "dummy_tag",
-                                "url": "http://dummy.url"
+                                "url": "https://www.google.com"
                             },
                             UUID("a2a26000-f299-4f75-bb30-fd9dbe5a5c4c"): {
                                 "id": UUID("a2a26000-f299-4f75-bb30-fd9dbe5a5c4c"),
                                 "name": "monitor_name",
                                 "description": "monitor_description",
                                 "tag": "dummy_tag",
-                                "url": "http://dummy.url"
+                                "url": "https://www.google.com"
                             }
                         }
                     },

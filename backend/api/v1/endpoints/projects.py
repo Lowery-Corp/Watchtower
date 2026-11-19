@@ -13,7 +13,6 @@ from repositories.projects import (
     delete_project,
 )
 
-
 router = APIRouter()
 
 @router.get("", summary="Get all projects for the current user")
@@ -22,9 +21,10 @@ async def fetch_projects(
     project_id: UUID | None = None,
     current_user: AuthorizedUser = Depends(get_current_user),
 ) -> dict[Any, Any]:
-
-    user_projects: dict[str, Any] = await get_projects(current_user, project_id)
-
+    user_projects: dict[str, Any] = await get_projects(
+        user_id=current_user.id,
+        project_id=project_id
+    )
     return user_projects
 
 
@@ -33,10 +33,9 @@ async def new_project(
     new_project_body: CreateProjectRequest,
     current_user: AuthorizedUser = Depends(get_current_user),
 ) -> dict[str, str | Any]:
-
     new_project = await create_project(
         new_project_body,
-        current_user=current_user,
+        user_id=current_user.id,
     )
 
     return new_project
@@ -48,10 +47,9 @@ async def edit_project(
     updated_project_body: UpdateProjectRequest,
     current_user: AuthorizedUser = Depends(get_current_user),
 ) -> dict[str, str | Any]:
-
     updated_project: dict[str, Any] = await update_project(
         updated_project_body,
-        current_user=current_user,
+        user_id=current_user.id,
         project_id=project_id
     )
 
@@ -63,7 +61,9 @@ async def trash_project(
     project_id: UUID,
     current_user: AuthorizedUser = Depends(get_current_user),
 ) -> dict[str, str | Any]:
-
-    deleted = await delete_project(project_id=project_id, current_user=current_user)
+    deleted = await delete_project(
+        project_id=project_id,
+        user_id=current_user.id
+    )
 
     return deleted

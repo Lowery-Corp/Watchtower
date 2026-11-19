@@ -13,9 +13,11 @@
 - Defensive project response normalization for the API's open-object list and detail response schemas.
 - Fixed project collection parsing for the backend's actual `{ projects: { "<uuid>": { id, name, description } } }` response and added handling for 200-level `{ error }` mutation responses.
 - Project environment workspace opened from each project, with responsive list, loading/empty/error states, create and edit forms, and project-level environment counts.
-- Environment integration using `GET/POST /api/v1/projects/{project_id}/environments` and `GET/PUT /api/v1/projects/{project_id}/environments/{environment_id}` with UUID-keyed response normalization. Environment deletion is intentionally omitted because the API does not expose it.
+- Environment integration using `GET/POST /api/v1/projects/{project_id}/environments` and `GET/PUT /api/v1/projects/{project_id}/environments/{environment_id}` with UUID-keyed response normalization.
 - Environment monitor workspace with monitor counts, responsive tables, nested detail URLs, endpoint links, create/edit forms, deletion confirmation, and loading/empty/error states.
 - Monitor CRUD integration using `GET/POST /api/v1/projects/{project_id}/environments/{environment_id}/monitors` and `GET/PUT/DELETE /api/v1/projects/{project_id}/environments/{environment_id}/monitors/{monitor_id}`.
+- Expandable monitor table subrows showing current state, recorded uptime percentage, sample count, and the newest 25 embedded `status_history` checks; monitor data refreshes silently every 15 seconds.
+- Overview uptime pivot with collapsible project, environment, and monitor rows; current health, history-based uptime bars, and sample counts roll up across the hierarchy and refresh every 15 seconds.
 - Updated project and environment create/edit payloads to the current API fields: `name` and `description`.
 - Cleaned `src/App.jsx` so it only handles session restoration, page selection, navigation, and layout composition; feature UI and API calls remain in their designated modules.
 - Reorganized the frontend according to `APP_STRUCTURE_BLUEPRINT.md`: pages, layouts, reusable components, API services, health polling hooks, and styles now live in their designated `src/` folders.

@@ -1,5 +1,7 @@
 from contextlib import asynccontextmanager
 
+from contextlib import suppress
+import asyncio
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -8,16 +10,28 @@ from middleware.request_id import RequestIDMiddleware
 from httpxC.http_client import http_client
 from cache.redis import redis_manager
 from api.v1.api import api_router
+from tasks.tasks import site_check
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await redis_manager.connect()
 
-    yield
+    site_check_task = asyncio.create_task(
+        site_check(),
+        name="site-check",
+    )
 
-    await redis_manager.disconnect()
-    await http_client.aclose()
+    try:
+        yield
+    finally:
+        site_check_task.cancel()
+
+        with suppress(asyncio.CancelledError):
+            await site_check_task
+
+        await redis_manager.disconnect()
+        await http_client.aclose()
 
 
 app = FastAPI(

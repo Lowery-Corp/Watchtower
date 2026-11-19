@@ -138,6 +138,10 @@ The current API-backed UI maps to these capabilities:
 | Update an environment monitor | `PUT /api/v1/projects/{project_id}/environments/{environment_id}/monitors/{monitor_id}` |
 | Delete an environment monitor | `DELETE /api/v1/projects/{project_id}/environments/{environment_id}/monitors/{monitor_id}` |
 
+Monitor list/detail responses may also include `status` and `status_history`. History entries contain a status value and Unix timestamp and are rendered as expandable table subrows rather than separate routes.
+
+The authenticated overview also loads the complete project/environment/monitor hierarchy and renders an uptime pivot. Monitor history is aggregated upward for environment- and project-level status, recorded uptime, and sample totals.
+
 Health probes can be refreshed manually and are automatically refreshed every 10 minutes while the dashboard tab remains open.
 
 ### Frontend URL Pattern

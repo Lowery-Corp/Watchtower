@@ -11,3 +11,16 @@ class UpdateMonitorRequest(BaseModel):
     url: str | None = None
     name: str | None = None
     description: str | None = None
+
+class MonitorStatusHistoryEntry(BaseModel):
+    status: str
+    timestamp: float
+
+class GetMonitorResponse(BaseModel):
+    id: str
+    tag: str
+    url: str
+    name: str
+    description: str | None = None
+    status: str | None = None
+    status_history: list[MonitorStatusHistoryEntry] | None = None

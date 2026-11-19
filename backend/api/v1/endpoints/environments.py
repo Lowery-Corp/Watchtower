@@ -10,7 +10,7 @@ from repositories.environments import (
     get_environments_by_project,
     create_environment,
     update_environment,
-    # delete_environment,
+    delete_environment,
 )
 
 router = APIRouter()
@@ -23,7 +23,11 @@ async def fetch_environments_by_project(
     current_user: AuthorizedUser = Depends(get_current_user),
 ) -> dict[Any, Any]:
 
-    user_environments: dict[str, Any] = await get_environments_by_project(current_user, project_id, environment_id)
+    user_environments: dict[str, Any] = await get_environments_by_project(
+        user_id=current_user.id,
+        project_id=project_id,
+        environment_id=environment_id
+    )
 
     return user_environments
 
@@ -34,9 +38,14 @@ async def new_environment(
     new_environment_body: CreateEnvironmentRequest,
     current_user: AuthorizedUser = Depends(get_current_user),
 ) -> dict[str, Any]:
-    new_environment: dict[str, Any] = await create_environment(new_environment_body, project_id, current_user)
+    new_environment: dict[str, Any] = await create_environment(
+        new_environment_body=new_environment_body,
+        project_id=project_id,
+        user_id=current_user.id
+    )
 
     return new_environment
+
 
 @router.put("/{project_id}/environments/{environment_id}", summary="Update an existing environment for a specific project for the current user")
 async def edit_environment(
@@ -45,6 +54,25 @@ async def edit_environment(
     updated_environment_body: UpdateEnvironmentRequest,
     current_user: AuthorizedUser = Depends(get_current_user),
 ) -> dict[str, Any]:
-    updated_environment: dict[str, Any] = await update_environment(updated_environment_body, project_id, environment_id, current_user)
+    updated_environment: dict[str, Any] = await update_environment(
+        updated_environment_body=updated_environment_body,
+        project_id=project_id,
+        environment_id=environment_id,
+        user_id=current_user.id
+    )
 
     return updated_environment
+
+
+@router.delete("/{project_id}/environments/{environment_id}", summary="Delete an existing environment for a specific project for the current user")
+async def delete_environment_endpoint(
+    project_id: UUID,
+    environment_id: UUID,
+    current_user: AuthorizedUser = Depends(get_current_user),
+) -> dict[str, str | Any]:
+    deleted_environment: dict[str, str | Any] = await delete_environment(
+        project_id=project_id,
+        environment_id=environment_id,
+        user_id=current_user.id)
+
+    return deleted_environment

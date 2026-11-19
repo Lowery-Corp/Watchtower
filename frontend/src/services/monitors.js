@@ -7,6 +7,16 @@ function assertApiSuccess(payload) {
 
 export function normalizeMonitor(value) {
   if (!value || typeof value !== "object" || !(value.id || value.monitor_id || value.name || value.monitor_name)) return null;
+  const currentStatus = value.status === true || value.status === "up" || value.status === "operational"
+    ? true
+    : value.status === false || value.status === "down" || value.status === "unavailable"
+      ? false
+      : null;
+  const statusHistory = Array.isArray(value.status_history) ? value.status_history.map((entry, index) => ({
+    id: `${entry?.timestamp ?? "unknown"}-${index}`,
+    status: entry?.status === true || entry?.status === "up" || entry?.status === "operational",
+    timestamp: Number(entry?.timestamp),
+  })).filter((entry) => Number.isFinite(entry.timestamp)).sort((a, b) => b.timestamp - a.timestamp) : [];
   return {
     ...value,
     monitor_id: value.monitor_id || value.id,
@@ -14,6 +24,8 @@ export function normalizeMonitor(value) {
     monitor_description: value.monitor_description ?? value.description ?? "",
     monitor_tag: value.monitor_tag || value.tag || "",
     monitor_url: value.monitor_url || value.url || "",
+    monitor_status: currentStatus,
+    monitor_status_history: statusHistory,
   };
 }
 

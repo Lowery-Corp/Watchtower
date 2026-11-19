@@ -1,23 +1,23 @@
 from typing import Any
 from uuid import UUID
+from datetime import datetime
 
 from repositories.helpers import gen_id
 from db.database import database
-from schemas.user import AuthorizedUser
 from schemas.monitors import CreateMonitorRequest, UpdateMonitorRequest
 
 from repositories.environments import get_environments_by_project
 
 async def get_monitors(
-    current_user: AuthorizedUser,
+    user_id: UUID,
     project_id: UUID,
     environment_id: UUID,
     monitor_id: UUID | None = None,
 ) -> dict[Any, Any]:
-    if current_user.id not in database:
+    if user_id not in database:
         return {"error": "no monitors found for user"}
 
-    current_environment: dict[Any, Any] = await get_environments_by_project(current_user, project_id, environment_id)
+    current_environment: dict[Any, Any] = await get_environments_by_project(user_id, project_id, environment_id)
 
     if not current_environment:
         return {"error": "Environment not found"}
@@ -35,7 +35,7 @@ async def create_monitor(
     new_monitor_body: CreateMonitorRequest,
     project_id: UUID,
     environment_id: UUID,
-    current_user: AuthorizedUser,
+    user_id: UUID,
 ) -> dict[str, str | Any]:
     new_monitor: dict[str, Any] = {
         "id": gen_id(),
@@ -45,10 +45,10 @@ async def create_monitor(
         "description": new_monitor_body.description or "No description provided",
     }
 
-    if current_user.id not in database:
-        database[current_user.id] = {"projects": {}}
+    if user_id not in database:
+        database[user_id] = {"projects": {}}
 
-    current_environment: dict[Any, Any] = await get_environments_by_project(current_user, project_id, environment_id)
+    current_environment: dict[Any, Any] = await get_environments_by_project(user_id, project_id, environment_id)
 
     if not current_environment:
         return {"error": "Environment not found"}
@@ -56,8 +56,8 @@ async def create_monitor(
     if "monitors" not in current_environment:
         current_environment["monitors"] = {}
 
-    database[current_user.id]["projects"][project_id]["environments"][environment_id]["monitors"][new_monitor["id"]] = new_monitor
-    return await get_monitors(current_user, project_id, environment_id, new_monitor["id"])
+    database[user_id]["projects"][project_id]["environments"][environment_id]["monitors"][new_monitor["id"]] = new_monitor
+    return await get_monitors(user_id, project_id, environment_id, new_monitor["id"])
 
 
 async def update_monitor(
@@ -65,9 +65,9 @@ async def update_monitor(
     project_id: UUID,
     environment_id: UUID,
     monitor_id: UUID,
-    current_user: AuthorizedUser,
+    user_id: UUID,
 ) -> dict[str, str | Any]:
-    current_monitor: dict[str, Any] = await get_monitors(current_user, project_id, environment_id, monitor_id)
+    current_monitor: dict[str, Any] = await get_monitors(user_id, project_id, environment_id, monitor_id)
 
     if not current_monitor:
         return {"error": "Monitor not found"}
@@ -77,7 +77,7 @@ async def update_monitor(
     current_monitor["name"] = updated_monitor_body.name or current_monitor.get("name", "No name provided")
     current_monitor["description"] = updated_monitor_body.description or current_monitor.get("description", "No description provided")
 
-    database[current_user.id]["projects"][project_id]["environments"][environment_id]["monitors"][monitor_id] = current_monitor
+    database[user_id]["projects"][project_id]["environments"][environment_id]["monitors"][monitor_id] = current_monitor
     return current_monitor
 
 
@@ -85,12 +85,36 @@ async def delete_monitor(
     project_id: UUID,
     environment_id: UUID,
     monitor_id: UUID,
-    current_user: AuthorizedUser,
+    user_id: UUID,
 ) -> dict[str, str | Any]:
-    current_monitor: dict[str, Any] = await get_monitors(current_user, project_id, environment_id, monitor_id)
+    current_monitor: dict[str, Any] = await get_monitors(user_id, project_id, environment_id, monitor_id)
 
     if not current_monitor:
         return {"error": "Monitor not found"}
 
-    del database[current_user.id]["projects"][project_id]["environments"][environment_id]["monitors"][monitor_id]
+    del database[user_id]["projects"][project_id]["environments"][environment_id]["monitors"][monitor_id]
     return {"message": "Monitor deleted successfully"}
+
+
+async def update_monitor_uptime(
+    user_id: UUID,
+    project_id: UUID,
+    environment_id: UUID,
+    monitor_id: UUID,
+    status: bool,
+) -> bool:
+    current_monitor: dict[str, Any] = await get_monitors(user_id, project_id, environment_id, monitor_id)
+    if "status" not in current_monitor or "status_history" not in current_monitor:
+        current_monitor["status"] = False
+        current_monitor["status_history"] = []
+
+
+    current_monitor["status"] = status
+    status_history: dict[str, Any] = {
+        "status": status,
+        "timestamp": datetime.timestamp(datetime.now()),
+    }
+    current_monitor["status_history"].append(status_history)
+
+    database[user_id]["projects"][project_id]["environments"][environment_id]["monitors"][monitor_id] = current_monitor
+    return True

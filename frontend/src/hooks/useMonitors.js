@@ -7,15 +7,22 @@ export function useMonitors(projectId, environmentId) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  const refresh = useCallback(async () => {
+  const load = useCallback(async (showLoading = true) => {
     if (!projectId || !environmentId) return;
-    setLoading(true); setError("");
+    if (showLoading) setLoading(true);
+    setError("");
     try { setMonitors(await listMonitors(projectId, environmentId)); }
     catch (err) { setError(err.message); }
-    finally { setLoading(false); }
+    finally { if (showLoading) setLoading(false); }
   }, [projectId, environmentId]);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  const refresh = useCallback(() => load(true), [load]);
+
+  useEffect(() => {
+    load(true);
+    const timer = setInterval(() => load(false), 15000);
+    return () => clearInterval(timer);
+  }, [load]);
 
   const create = async (values) => {
     setSaving(true); setError("");
