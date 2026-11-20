@@ -4,113 +4,203 @@ from uuid import UUID
 database: dict[UUID, Any] = {
     UUID("2e5ab28a-4ddf-48a1-ad0a-ace98ef64832"): {
         "projects": {
-            UUID("54ea8459-d43e-407d-a6c6-b8b9ad3f7c59"): {
-                "id": UUID("54ea8459-d43e-407d-a6c6-b8b9ad3f7c59"),
-                "name": "project_name",
-                "description": "project_description",
+            UUID("bd9d7c59-2b12-4fd3-a924-09a539db9088"): {
+                "id": UUID("bd9d7c59-2b12-4fd3-a924-09a539db9088"),
+                "name": "Scrappy RAG",
+                "description": "This is a project for the Scrappy RAG application. Used to analyze documents using AI.",
                 "environments": {
-                    UUID("e4f83f05-14d4-48a8-81a9-dff1196c24c8"): {
-                        "id": UUID("e4f83f05-14d4-48a8-81a9-dff1196c24c8"),
+                    UUID("14b79c61-69ac-4d7b-8d20-8418c5efca09"): {
+                        "id": UUID("14b79c61-69ac-4d7b-8d20-8418c5efca09"),
                         "name": "Productions",
                         "description": "environment_description",
                         "monitors": {
-                            UUID("2948bd56-5d47-4c3a-8b8b-436199ade864"): {
-                                "id": UUID("2948bd56-5d47-4c3a-8b8b-436199ade864"),
-                                "name": "John's Portfolio",
+                            UUID("c108f550-64a9-4030-b01d-a5f6d3a73849"): {
+                                "id": UUID("c108f550-64a9-4030-b01d-a5f6d3a73849"),
+                                "name": "Frontend",
                                 "description": "updated_description",
-                                "tag": "portfolio",
-                                "url": "https://portfolio.johnmgrubbs.io"
-                            },
-                            UUID("93e5c293-9748-455e-9911-d1f72ccde2a3"): {
-                                "id": UUID("93e5c293-9748-455e-9911-d1f72ccde2a3"),
-                                "name": "Scrappy RAG",
-                                "description": "monitor_description",
                                 "tag": "scrappy",
                                 "url": "https://scrappy.johnmgrubbs.io"
                             },
-                            UUID("a2a26000-f299-4f75-bb30-fd9dbe5a5c4c"): {
-                                "id": UUID("a2a26000-f299-4f75-bb30-fd9dbe5a5c4c"),
-                                "name": "monitor_name",
+                            UUID("d0919d16-8113-4dc0-a758-642f48cb988a"): {
+                                "id": UUID("d0919d16-8113-4dc0-a758-642f48cb988a"),
+                                "name": "Minio",
+                                "description": "S3 compatible object storage server",
+                                "tag": "minio",
+                                "url": "https://minio.johnmgrubbs.io"
+                            },
+                            UUID("ccb5594d-0bc9-48d2-a6b9-193562eb1ce9"): {
+                                "id": UUID("ccb5594d-0bc9-48d2-a6b9-193562eb1ce9"),
+                                "name": "Backend",
                                 "description": "monitor_description",
-                                "tag": "dummy_tag",
+                                "tag": "scrappy-api",
+                                "url": "https://scrapyard.johnmgrubbs.io",
+                            },
+                            UUID("c097ae5c-0bff-4b7d-8396-be8d4607808a"): {
+                                "id": UUID("c097ae5c-0bff-4b7d-8396-be8d4607808a"),
+                                "name": "google",
+                                "description": "monitor_description",
+                                "tag": "google",
                                 "url": "https://www.google.com"
-                            }
+                            },
+                        },
+                    },
+                    UUID("325ae31b-8a14-4bca-9236-982c34bf90d3"): {
+                        "id": UUID("325ae31b-8a14-4bca-9236-982c34bf90d3"),
+                        "name": "Development",
+                        "description": "environment_description",
+                        "monitors": {
+                            UUID("d7f00a01-8153-4183-958c-4e940ddef6d2"): {
+                                "id": UUID("d7f00a01-8153-4183-958c-4e940ddef6d2"),
+                                "name": "Dev Scrappy RAG",
+                                "description": "updated_description",
+                                "tag": "dev-scrappy",
+                                "url": "https://dscrappy.johnmgrubbs.io"
+                            },
+                            UUID("6094c0a9-62cc-45b4-9afe-22b8ae7b6428"): {
+                                "id": UUID("6094c0a9-62cc-45b4-9afe-22b8ae7b6428"),
+                                "name": "Dev Scrappy API",
+                                "description": "monitor_description",
+                                "tag": "dev-scrappy-api",
+                                "url": "https://dscrapyard.johnmgrubbs.io",
+                            },
+                        },
+                    },
+                }
+            },
+            UUID("66f401c4-63dc-4506-b396-f86281435db7"): {
+                "id": UUID("66f401c4-63dc-4506-b396-f86281435db7"),
+                "name": "Vaults",
+                "description": "This is an app for managing user profiles across applications.",
+                "environments": {
+                    UUID("c698dba8-6e73-4cff-9fd6-c57ac98f66f6"): {
+                        "id": UUID("c698dba8-6e73-4cff-9fd6-c57ac98f66f6"),
+                        "name": "Production",
+                        "description": "environment_description",
+                        "monitors": {
+                            UUID("481ae252-74a8-4e7f-82b9-4ae5af8ace6d"): {
+                                "id": UUID("481ae252-74a8-4e7f-82b9-4ae5af8ace6d"),
+                                "name": "Frontend",
+                                "description": "updated_description",
+                                "tag": "vaults",
+                                "url": "https://vaults.johnmgrubbs.io",
+                            },
+                            UUID("343f7dc0-75ff-4dd1-adf2-b987f8b030df"): {
+                                "id": UUID("343f7dc0-75ff-4dd1-adf2-b987f8b030df"),
+                                "name": "Backend",
+                                "description": "monitor_description",
+                                "tag": "vaults-api",
+                                "url": "https://auth.johnmgrubbs.io",
+                            },
                         }
                     },
-                    UUID("bb64e669-26c4-4167-9794-0433c976c998"): {
-                        "id": UUID("bb64e669-26c4-4167-9794-0433c976c998"),
-                        "name": "environment_name",
-                        "description": "environment_description"
+                    UUID("3b17f522-868e-4a1b-bb3c-d9acf73860cd"): {
+                        "id": UUID("3b17f522-868e-4a1b-bb3c-d9acf73860cd"),
+                        "name": "Development",
+                        "description": "environment_description",
+                        "monitors": {
+                            UUID("d5b2effb-d964-42ca-b9ff-ccd55429184a"): {
+                                "id": UUID("d5b2effb-d964-42ca-b9ff-ccd55429184a"),
+                                "name": "Dev Frontend",
+                                "description": "updated_description",
+                                "tag": "dev-vaults",
+                                "url": "https://dvaults.johnmgrubbs.io",
+                            },
+                            UUID("dfcb122c-5f5e-4013-b013-6ca1f2c09e1e"): {
+                                "id": UUID("dfcb122c-5f5e-4013-b013-6ca1f2c09e1e"),
+                                "name": "Dev Backend",
+                                "description": "monitor_description",
+                                "tag": "dev-vaults-api",
+                                "url": "https://dauth.johnmgrubbs.io",
+                            },
+                        }
                     },
-                    UUID("b839760c-607c-4e0f-9348-4420ef2b58e2"): {
-                        "id": UUID("b839760c-607c-4e0f-9348-4420ef2b58e2"),
-                        "name": "environment_name",
-                        "description": "environment_description"
-                    },
-                    UUID("59d0a4f2-7c6c-48d2-ba53-4739fc94671d"): {
-                        "id": UUID("59d0a4f2-7c6c-48d2-ba53-4739fc94671d"),
-                        "name": "environment_name",
-                        "description": "environment_description"
-                    }
                 }
             },
-            UUID("79c67f8f-66f5-4ffd-86a9-594f10006b3a"): {
-                "id": UUID("79c67f8f-66f5-4ffd-86a9-594f10006b3a"),
-                "name": "project_name",
-                "description": "project_description",
+            UUID("086bf9b4-bd26-42f3-bc29-9934035247bf"): {
+                "id": UUID("086bf9b4-bd26-42f3-bc29-9934035247bf"),
+                "name": "Portfolio",
+                "description": "This is a project for the Portfolio application. Used to showcase my work.",
                 "environments": {
-                    UUID("1174b78a-40b5-4d5b-85da-38607ec315ed"): {
-                        "id": UUID("1174b78a-40b5-4d5b-85da-38607ec315ed"),
-                        "name": "environment_name",
-                        "description": "environment_description"
+                    UUID("d08a406a-49bb-4f68-a0a5-4bc45cc9e88d"): {
+                        "id": UUID("d08a406a-49bb-4f68-a0a5-4bc45cc9e88d"),
+                        "name": "Production",
+                        "description": "environment_description",
+                        "monitors": {
+                            UUID("6d22d42c-5cc8-4744-a629-d6eb6dccd3ea"): {
+                                "id": UUID("6d22d42c-5cc8-4744-a629-d6eb6dccd3ea"),
+                                "name": "Frontend",
+                                "description": "updated_description",
+                                "tag": "portfolio",
+                                "url": "https://portfolio.johnmgrubbs.io",
+                            },
+                        }
                     },
-                    UUID("b9c5b66f-cf78-4ab0-836b-a97de525208e"): {
-                        "id": UUID("b9c5b66f-cf78-4ab0-836b-a97de525208e"),
-                        "name": "environment_name",
-                        "description": "environment_description"
+                    UUID("1d936bee-bd30-406a-a1cf-4aae75f2ee2f"): {
+                        "id": UUID("1d936bee-bd30-406a-a1cf-4aae75f2ee2f"),
+                        "name": "Development",
+                        "description": "environment_description",
+                        "monitors": {
+                            UUID("18f9e4fc-4f5d-4fdb-9a3b-bf58e69b0db2"): {
+                                "id": UUID("18f9e4fc-4f5d-4fdb-9a3b-bf58e69b0db2"),
+                                "name": "Dev Frontend",
+                                "description": "updated_description",
+                                "tag": "dev-portfolio",
+                                "url": "https://dportfolio.johnmgrubbs.io",
+                            },
+                        },
                     },
-                    UUID("8138b1bb-c431-44a0-979c-8918fcb03fe7"): {
-                        "id": UUID("8138b1bb-c431-44a0-979c-8918fcb03fe7"),
-                        "name": "environment_name",
-                        "description": "environment_description"
+                }
+
+            },
+            UUID("01913c99-a112-4c55-a377-748d7c1aefb3"): {
+                "id": UUID("01913c99-a112-4c55-a377-748d7c1aefb3"),
+                "name": "Watchtower",
+                "description": "This is a project for the Watchtower application. Used to monitor applications and services.",
+                "environments": {
+                    UUID("04477c6b-4e50-4d39-b057-f551cda6102f"): {
+                        "id": UUID("04477c6b-4e50-4d39-b057-f551cda6102f"),
+                        "name": "Production",
+                        "description": "environment_description",
+                        "monitors": {
+                            UUID("654bfdf7-4339-48dc-a324-0982c7df640b"): {
+                                "id": UUID("654bfdf7-4339-48dc-a324-0982c7df640b"),
+                                "name": "Frontend",
+                                "description": "updated_description",
+                                "tag": "watchtower",
+                                "url": "https://watchtower.johnmgrubbs.io",
+                            },
+                            UUID("f1e90cb2-2010-41a2-a18a-271bf534bec5"): {
+                                "id": UUID("f1e90cb2-2010-41a2-a18a-271bf534bec5"),
+                                "name": "Backend",
+                                "description": "monitor_description",
+                                "tag": "watchtower-api",
+                                "url": "https://wt-backend.johnmgrubbs.io",
+                            },
+                        }
                     },
-                    UUID("81986acb-b109-4583-9017-10768c349092"): {
-                        "id": UUID("81986acb-b109-4583-9017-10768c349092"),
-                        "name": "environment_name",
-                        "description": "environment_description"
-                    }
+                    UUID("bf2ad38b-de80-403a-a6c9-1c3adb83f081"): {
+                        "id": UUID("bf2ad38b-de80-403a-a6c9-1c3adb83f081"),
+                        "name": "Development",
+                        "description": "environment_description",
+                        "monitors": {
+                            UUID("986c2af8-b36a-46d5-a694-efcf77b47ff5"): {
+                                "id": UUID("986c2af8-b36a-46d5-a694-efcf77b47ff5"),
+                                "name": "Dev Frontend",
+                                "description": "updated_description",
+                                "tag": "dev-watchtower",
+                                "url": "https://dwatchtower.johnmgrubbs.io",
+                            },
+                            UUID("42cc9132-a931-4d69-8203-a4d353919f69"): {
+                                "id": UUID("42cc9132-a931-4d69-8203-a4d353919f69"),
+                                "name": "Dev Backend",
+                                "description": "monitor_description",
+                                "tag": "dev-watchtower-api",
+                                "url": "https://dwt-backend.johnmgrubbs.io",
+                            },
+                        }
+                    },
                 }
             },
-            UUID("5b336faa-ec0e-4ebe-bc9d-99c3acc5f4ec"): {
-                "id": UUID("5b336faa-ec0e-4ebe-bc9d-99c3acc5f4ec"),
-                "name": "project_name",
-                "description": "project_description"
-            },
-            UUID("2344ca7a-6ac2-4e72-abd9-cbef5e0c5c68"): {
-                "id": UUID("2344ca7a-6ac2-4e72-abd9-cbef5e0c5c68"),
-                "name": "project_name",
-                "description": "project_description"
-            },
-            UUID("10b7794f-42af-464f-a836-33082997f60a"): {
-                "id": UUID("10b7794f-42af-464f-a836-33082997f60a"),
-                "name": "project_name",
-                "description": "project_description"
-            },
-            UUID("aaa64970-e093-4679-a1cd-ea9580e72cbe"): {
-                "id": UUID("aaa64970-e093-4679-a1cd-ea9580e72cbe"),
-                "name": "project_name",
-                "description": "project_description"
-            },
-            UUID("c937c929-fc99-4c04-8b75-1370671e72a5"): {
-                "id": UUID("c937c929-fc99-4c04-8b75-1370671e72a5"),
-                "name": "project_name",
-                "description": "project_description"
-            },
-            UUID("6918e359-518b-488a-b942-5e33296b9d76"): {
-                "id": UUID("6918e359-518b-488a-b942-5e33296b9d76"),
-                "name": "project_name",
-                "description": "project_description"
-            }
         }
     }
 }
