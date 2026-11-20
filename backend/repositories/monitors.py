@@ -1,6 +1,7 @@
 from typing import Any
 from uuid import UUID
 from datetime import datetime
+from httpxC.http_client import http_client
 
 from repositories.helpers import gen_id
 from db.database import database
@@ -57,6 +58,7 @@ async def create_monitor(
         current_environment["monitors"] = {}
 
     database[user_id]["projects"][project_id]["environments"][environment_id]["monitors"][new_monitor["id"]] = new_monitor
+    await run_status_check(user_id, project_id, environment_id, new_monitor["id"])
     return await get_monitors(user_id, project_id, environment_id, new_monitor["id"])
 
 
@@ -78,6 +80,7 @@ async def update_monitor(
     current_monitor["description"] = updated_monitor_body.description or current_monitor.get("description", "No description provided")
 
     database[user_id]["projects"][project_id]["environments"][environment_id]["monitors"][monitor_id] = current_monitor
+    await run_status_check(user_id, project_id, environment_id, monitor_id)
     return current_monitor
 
 
@@ -118,3 +121,45 @@ async def update_monitor_uptime(
 
     database[user_id]["projects"][project_id]["environments"][environment_id]["monitors"][monitor_id] = current_monitor
     return True
+
+
+async def delete_old_status_history(
+    user_id: UUID,
+    project_id: UUID,
+    environment_id: UUID,
+    monitor_id: UUID,
+    days_to_keep: int = 10,
+) -> bool:
+    current_monitor: dict[str, Any] = await get_monitors(user_id, project_id, environment_id, monitor_id)
+    if "status_history" not in current_monitor:
+        return False
+
+    cutoff_timestamp = datetime.timestamp(datetime.now()) - (days_to_keep * 24 * 60 * 60)
+    current_monitor["status_history"] = [
+        entry for entry in current_monitor["status_history"] if entry["timestamp"] >= cutoff_timestamp
+    ]
+
+    database[user_id]["projects"][project_id]["environments"][environment_id]["monitors"][monitor_id] = current_monitor
+    return True
+
+
+async def run_status_check(
+    user_id: UUID,
+    project_id: UUID,
+    environment_id: UUID,
+    monitor_id: UUID,
+) -> bool:
+    current_monitor: dict[str, Any] = await get_monitors(user_id, project_id, environment_id, monitor_id)
+    url = current_monitor.get("url")
+
+    if not url:
+        return False
+
+    try:
+        response = await http_client.get(url, timeout=10.0)
+        status = response.is_success
+    except Exception:
+        status = False
+
+    await update_monitor_uptime(user_id, project_id, environment_id, monitor_id, status)
+    return status
